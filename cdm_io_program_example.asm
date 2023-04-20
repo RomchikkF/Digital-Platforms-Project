@@ -13,6 +13,7 @@ read:
 				 	# the I/O address space
 	tst r1
 	until ne 	# Drop out of the loop when r1 not zero
+	st r0, r3
 	inc r0
 	ld r0, r2
 	inc r0
@@ -23,6 +24,8 @@ read:
 	st r0, r1
 	inc r0
 	st r0, r3
+	clr r1
+	clr r3
 	dec r0
 	br read 		# Go back to the start of the keyboard read loop
 end	
