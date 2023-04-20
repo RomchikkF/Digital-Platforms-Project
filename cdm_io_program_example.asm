@@ -7,16 +7,22 @@ start:
 	ldi r0,stack
 	stsp r0 	# Sets the initial value of SP to 0xf0
 	ldi r0, IOReg 	# Load the address of the keyboard and display in r0
-readkbd:
+read:
 	do 		# Begin the keyboard read loop
 		ld r0,r1 	# Load r1 from data memory, which includes
 				 	# the I/O address space
-				 	# Now bits 0..6 of r1 encode the last char typed,
-					# and bit 7 indicates the keyboard status
-	tst r1 		# The N flag is taken from bit 7 of the register
-	until pl 	# Drop out of the loop when the N flag is 0
-			# and now r1 contains the ASCII code of the last char
-	st r0,r1 		# Display the hex of the ASCII code
+	tst r1
+	until ne 	# Drop out of the loop when r1 not zero
+	inc r0
+	ld r0, r2
+	inc r0
+	ld r0, r3
+	add r2, r3
 	
-	br readkbd 		# Go back to the start of the keyboard read loop
+	ldi r0, IOReg
+	st r0, r1
+	inc r0
+	st r0, r3
+	dec r0
+	br read 		# Go back to the start of the keyboard read loop
 end	
