@@ -45,7 +45,7 @@ asect  0x00
 			else
 				ldi r3, 0
 			fi
-		fi
+		fi	
 	fi
 # =================================
     ldi r0, c    # Loads the address of your result into r0 for the robot
