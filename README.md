@@ -63,7 +63,7 @@ Contributions to the Pinball Game project are welcome! If you'd like to contribu
 ## License
 The Pinball Game project is licensed under the [MIT License](https://opensource.org/licenses/MIT). You are free to use, modify, and distribute the code as per the terms of this license.
 
-Please note that this project is created for educational purposes and may contain references to copyrighted materials, such as pinball game elements. Ensure compliance with relevant laws and licenses when using this project.
+Please note that this project is created for educational purposes.
 
 Enjoy playing the Pinball Game in Logisim! If you have any questions or encounter any issues, please feel free to reach out to the project team.
 
