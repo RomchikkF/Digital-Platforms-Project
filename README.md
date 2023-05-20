@@ -4,6 +4,8 @@ Welcome to the Pinball Game project in Logisim! This is a digital implementation
 
 ![ScreenShot](/readme_files/game_picture.png)
 
+![GameFieldGif](/readme_files/game_field.gif)
+
 ## Table of Contents
 - [Pinball Game in Logisim](#pinball-game-in-logisim)
   - [Table of Contents](#table-of-contents)
