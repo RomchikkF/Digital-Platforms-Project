@@ -41,9 +41,9 @@ The Pinball Game project includes the following features:
 
 2. **Collision Detection**: Detect collisions between the ball and various game elements, such as walls and doors. This allows for realistic ball movement and interaction with the playfield.
 
-3. **Ball Physics**: Experience realistic ball physics, including gravity, acceleration, and bouncing off walls and game elements.
+3. **Ball Physics**: Experience realistic ball physics, including gravity and bouncing off walls and game elements.
 
-4. **Score Tracking**: Track your score as you play the game. Score points by hitting targets, bumpers, and special game elements.
+4. **Score Tracking**: Track your score as you play the game. Score points by hitting walls and doors.
 
 ## Contributing
 Contributions to the Pinball Game project are welcome! If you'd like to contribute, please follow these steps:
