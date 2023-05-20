@@ -1,36 +1,72 @@
-# Проект пинбол
+# Pinball Game in Logisim
 
-## Логика игры:
-В игре есть мяч – один пиксель, он характеризуется 2 8-и битными координатами, а также 2 8-и битными скоростями движения по каждой координате. Мяч ускоряет гравитация. Первые 6 бит координат мяча считаются целой частью, а остальные 2 – дробная часть, для большей реалистичности движения. Скорость вообще имеет дробную часть в 5 бит.
+Welcome to the Pinball Game project in Logisim! This is a digital implementation of a classic pinball game using the Logisim circuit simulation tool and CDM8 processor. In this README, you will find an overview of the project, instructions for running the simulation, and details about the game's features.
 
-Также есть «объекты» - стены. Это отрезки в 4 возможных состояниях: горизонтальные, вертикальные, и 2 вида диагональных под углом 45. Каждая стена характеризуется 2 битами типа, двумя 6-и битными координатами левого нижнего угла и размером до 5-и бит. При столкновении со стеной мяч отскакивает и увеличивает текущий счёт игры на 1.
+![ScreenShot](/readme_files/game_picture.png)
 
-В основном все стены статичны, но есть 2(или 4), которые игрок может включать и выключать по кнопке.
+## Table of Contents
+- [Pinball Game in Logisim](#pinball-game-in-logisim)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Running the Simulation](#running-the-simulation)
+  - [Game Features](#game-features)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Authors:](#authors)
 
-Задача игрока – не дать мячу вылететь за пределы экрана.
+## Overview
+The Pinball Game project aims to recreate the excitement of a traditional pinball game using Logisim, a digital logic simulator. The project involves designing and implementing various circuits that simulate the behavior of a pinball machine. 
 
-Так как 1 экран максимального размера 32x32 слишком мал для пинбола, мы сделали один большой экран 64x64 из четырёх маленьких. В целях оптимизации на каждом экране максимум 1 управляемая стена и всего максимум 8 стен.
+## Running the Simulation
+To run the Pinball Game simulation, follow these steps:
 
-## Устройство графической части.
-В первую очередь была написана схема, конвертирующая стены в столбцы из пикселей. На вход подаётся 1 объект, координата столбца, в который нужно записать пиксели от новой стены, и состояние столбца до обработки стены.
+1. Install Logisim: Download and install Logisim from the official website (https://www.cburch.com/logisim/).
 
-В таком состоянии основная схема должна перебирать каждый столбец, и для каждого столбца перебирать каждую стену. Кроме того, надо хранить состояние всех столбцов, так как одновременно обрабатывается только 1 из них.
+2. Clone the Repository: Clone the Pinball Game repository to your local machine using the following command: `git clone https://github.com/RomchikkF/Digital-Platforms-Project.git`
 
-Это работает невероятно медленно. Одно заполнение экрана происходит за несколько секунд. Для ускорения можно не вычислять заново пересечения столбцов со стенами, а запоминать их после первой обработки. Если запустить этот процесс 1 раз в начале, а после этого использовать запомненные значения просто как «фон», то будет быстрее. 
+3. Open the Project: Launch Logisim and open the `pinball.circ` file located in the cloned repository.
 
-Кроме статичного поля есть ещё мяч и включаемые/выключаемые (управляемые) стены. 
+4. Start the Simulation: Click on the "Simulate" button in the Logisim toolbar to start the simulation.
 
-Схема graphics main получает на вход состояние мяча, 5-и битную координату столбца, который сейчас будет отрисован (это замедляет отрисовку в 32 раза с точки зрения тактов, но сами такты не тратят так много времени. Когда я пробовал запускать отрисовку 32 столбцов за раз, всё работало не в 32, а сразу в 100 раз медленнее), а также состояние фона столбцов с этим номером для каждого из 4 экранов, которые предпосчитаны и хранятся в 4 отдельных RAM. Возможно, позже я попробую переделать это, чтобы координаты столбцов были до 128 и 4 экрана рисовались не одновременно, а по очереди.
+5. Use LOAD GAME button to allow CDM8 to load game level map.
 
-Также необходимо рисовать управляемые стены на экранах. Есть 2 варианта: один из них – честно рендерить эту стену каждый кадр. Это не так плохо, так как стена всего 1 на экран, а значит для каждого столбца рендер запускается всего по разу. Но схема всё равно довольно толстая, и может ещё замедлить систему. Вариант 2 – сделать второй предподсчёт, и хранить для каждого столбца по 2 состояния: с включенной стеной и без. Но тогда придётся использовать аж в 2 раза больше RAM, а это как-то неприлично.
+6. Interact with the Pinball Machine: Use the provided input devices to control the doors and launch the ball. Observe the ball's movement, interact with different game elements, and aim for high scores!
 
-Сейчас макс скорость графической части достигается при 512Hz, поэтому на старте стоит замедлитель в 8 раз, который переводит часы с 4KHz в 512Hz. Поэтому можно запускать CDM-8 на частоте 4000.
+## Game Features
+The Pinball Game project includes the following features:
 
-## Устройство физики мяча
-Каждый такт скорость мяча по оси y увеличивается на 1 (гравитация), если переводить это в пиксели, то на 1/32 пикселя в такт. И каждый такт к координатам мяча прибавляется его скорость (с битовым сдвигом на 3). Сейчас аппаратно сделан костыль для тестирования системы, симулирующий часть физики – если мяч должен перескочить с самой левой части экрана в правую или наоборот – то его скорость по оси x инвертируется. Аналогично для оси y. В будущем выполнение этого условия означает конец игры, ведь мяч вылетел за пределы поля.
+1. **Doors**: Control the doors using input devices (2 buttons under the screen) to hit the ball and change its trajectory.
 
-План: написать для CDM-8 программу, которая проверяется столкнулся мяч с данной на вход стеной или нет. Программа принимает на вход 32 бита мяча и 2 + 24 бита стены (координаты переводятся в 8-и битные, потому что assembler работает с 8-и битными числами.) На выход программа должна выдать столкнулся ли мяч с этой стеной, а возможно ещё и обновленные координаты. Так как каждая стена существует только в 1 мониторе, то нужно перебирать по 8 стен перед тем, как действительно двигать мяч. Возможно, это уже будет катастрофически долго, потому что сейчас у нас всего 8 тактов между движениями мяча, а моя пробная программа для проверки столкновения уже работает около 64 (в худшем случае, а в лучшем за 8), и это только с 1 стеной! В теории, если бы CDM-8 действительно работал в 4KHz, то получается 4000/8/32 = 16 фпс. Для Logisim это даже неплохо, но такой скорости достичь очень вряд ли получится.
+2. **Collision Detection**: Detect collisions between the ball and various game elements, such as walls and doors. This allows for realistic ball movement and interaction with the playfield.
 
-### Варианты оптимизаций: 
-Отслеживать столкновение сразу с крупным сдвигом мяча. Сейчас за 1 такт мяч двигается на совсем чуть-чуть, иногда даже меньше чем на 1 пиксель на экране. Возможно, если двигать его сразу на большие расстояния предсказывая его следующую позицию, то погрешность увеличится не так сильно. Зато позволить сильно меньше зависеть от скорости программной части, например, проверяя столкновение заранее на 4 или даже 8 тактов вперёд. И если оно будет, то можно начать уже более точно вычислять, когда и где.
-Правильно расставлять стены. Проверка сталкивается мяч со стеной или нет – это кучка ифов, а значит, если расставить их в правильном порядке, то программа будет быстро обрываться, и в идеальном случае она работает за примерно 8 или 16 тактов.
+3. **Ball Physics**: Experience realistic ball physics, including gravity, acceleration, and bouncing off walls and game elements.
+
+4. **Score Tracking**: Track your score as you play the game. Score points by hitting targets, bumpers, and special game elements.
+
+## Contributing
+Contributions to the Pinball Game project are welcome! If you'd like to contribute, please follow these steps:
+
+1. Fork the repository on GitHub.
+
+2. Create a new branch with a descriptive name for your feature or bug fix.
+
+3. Make your changes, keeping the existing coding style and conventions.
+
+4. Test your changes thoroughly.
+
+5. Commit your changes and push them to your forked repository.
+
+6. Submit a pull request to the main repository, explaining the changes you've made.
+
+## License
+The Pinball Game project is licensed under the [MIT License](https://opensource.org/licenses/MIT). You are free to use, modify, and distribute the code as per the terms of this license.
+
+Please note that this project is created for educational purposes and may contain references to copyrighted materials, such as pinball game elements. Ensure compliance with relevant laws and licenses when using this project.
+
+Enjoy playing the Pinball Game in Logisim! If you have any questions or encounter any issues, please feel free to reach out to the project team.
+
+## Authors:
+
+- [Bondar Egor](https://github.com/Ensell84)
+- [Fesenko Roman](https://github.com/RomchikkF)
+- [Barsukova Daria](https://github.com/daria-barsukova)
